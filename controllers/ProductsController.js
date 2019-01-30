@@ -32,7 +32,6 @@ router.post('/add', (req, res) => {
 
 //UPDATE PRODUCT
 router.post('/update', (req, res) => {
-
   Product.findOneAndUpdate({
     _id: req.body.id,
   }, {
@@ -49,5 +48,21 @@ router.post('/update', (req, res) => {
       res.status(200).send(product);
     });
 });
+
+//GET ALL PRODUCTS
+router.get('/getAll', (req, res) => {
+  Product.find({}, (err, products) => {
+    if (err) return res.status(500).send("There was a problem getting the products");
+    res.status(200).send(products)
+  })
+})
+
+//FIND PRODUCTS
+router.get('/find', (req, res) => {
+  Product.find({ name: { "$regex": req.body.name, "$options": "i" } }, (err, products) => {
+    if (err) return res.status(500).send("There was a problem getting the products");
+    res.status(200).send(products)
+  })
+})
 
 module.exports = router;

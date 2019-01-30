@@ -26,6 +26,13 @@
    * api/products/update
    * name, kcal, proteins, fats, carboh, description, image
 
+* GET ALL PRODUCTS: get
+    * api/products/getAll
+
+* FIND PRODUCTS: get
+    * api/products/find
+    * name
+
 #### NOTES:
 * ADD NOTE: post
   * api/notes/add
