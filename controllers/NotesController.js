@@ -15,39 +15,63 @@ router.use(bodyParser.json());
 module.exports = router;
 
 //ADD NOTE
-router.post('/add', VerifyToken, function (req, res) {
+router.post('/add', VerifyToken, (req, res) => {
+  let kcal, proteins, fats;
+
+  Product.find({ _id: req.body.product }, (err, product) => {
+    if (err) return res.status(500).send(err);
+    kcal = Math.round(product.kcal * ((+(req.body.mass)) / 100));
+    proteins = Math.round(product.proteins * ((+(req.body.mass)) / 100));
+    fats = Math.round(product.fats * ((+(req.body.mass)) / 100));
+  })
 
   Note.create({
     product: req.body.product,
     user: req.userId,
     mass: +(req.body.mass),
-    eatType: req.body.eatType
+    kcal: kcal,
+    proteins: proteins,
+    fats: fats,
+    eatType: req.body.eatType,
+    date: new Date(req.body.date)
   },
-    function (err, note) {
-      if (err) return res.status(500).send(err)
+    (err, note) => {
+      if (err) return res.status(500).send(err);
       res.status(200).send(note);
     });
 });
 
-//EDIT NOTE
-router.post('/edit', VerifyToken, function (req, res) {
+//UPDATE NOTE
+router.post('/update', VerifyToken, (req, res) => {
+  let kcal, proteins, fats;
+
+  Product.find({ _id: req.body.product }, (err, product) => {
+    if (err) return res.status(500).send(err);
+    kcal = Math.round(product.kcal * ((+(req.body.mass)) / 100));
+    proteins = Math.round(product.proteins * ((+(req.body.mass)) / 100));
+    fats = Math.round(product.fats * ((+(req.body.mass)) / 100));
+  })
 
   Note.findOneAndUpdate({
     _id: req.body.id,
     user: req.userId,
   }, {
+      product: req.body.product,
       mass: req.body.mass || Note.mass,
+      kcal: kcal,
+      proteins: proteins,
+      fats: fats,
       date: new Deate(req.body.date) || Note.date,
       eatType: req.body.eatType || Note.eatType
     },
-    function (err, note) {
+    (err, note) => {
       if (err) return res.status(500).send(err)
       res.status(200).send(note);
     });
 });
 
 //GET NOTES BY DATE
-router.post('/get', VerifyToken, function (req, res) {
+router.post('/get', VerifyToken, (req, res) => {
 
   let start = new Date(req.body.start);
   let end = new Date(req.body.end);
@@ -56,27 +80,27 @@ router.post('/get', VerifyToken, function (req, res) {
     user: req.userId,
     date: { $gte: start, $lt: end }
   },
-    function (err, notes) {
+    (err, notes) => {
       if (err) return res.status(500).send(err)
       res.status(200).send(notes);
     });
 });
 
 //DELETE NOTE
-router.delete('/delete', VerifyToken, function (req, res) {
+router.delete('/delete', VerifyToken, (req, res) => {
 
   Note.findOneAndDelete({
     user: req.userId,
-    _id: req.body.noteId
+    _id: req.body.id
   },
-    function (err, note) {
+    (err, note) => {
       if (err) return res.status(500).send(err)
       res.status(200).send(note);
     });
 });
 
 //DELETE NOTES BY DATE
-router.delete('/deleteAll', VerifyToken, function (req, res) {
+router.delete('/deleteAll', VerifyToken, (req, res) => {
 
   let start = new Date(req.body.start);
   let end = new Date(req.body.end);
@@ -86,7 +110,7 @@ router.delete('/deleteAll', VerifyToken, function (req, res) {
     user: req.userId,
     date: { $gte: start, $lt: end },
   },
-    function (err, notes) {
+    (err, notes) => {
       if (err) return res.status(500).send(err)
       res.status(200).send(notes);
     });

@@ -14,8 +14,8 @@ router.use(bodyParser.json());
 
 
 //REGISTER USER
-router.post('/register', function (req, res) {
-  User.findOne({ email: req.body.email }, function (err, user) {
+router.post('/register', (req, res) => {
+  User.findOne({ email: req.body.email }, (err, user) => {
     if (user) return res.status(500).send('User with this e-mail already registered');
     const hashedPassword = bcrypt.hashSync(req.body.password, 8);
 
@@ -24,7 +24,7 @@ router.post('/register', function (req, res) {
       email: req.body.email,
       password: hashedPassword
     },
-      function (err, user) {
+      (err, user) => {
         if (err) return res.status(500).send("There was a problem registering the user.")
         // create a token
         let token = jwt.sign({ id: user._id }, config.secret, {
@@ -37,8 +37,8 @@ router.post('/register', function (req, res) {
 
 
 //LOGIN USER
-router.post('/login', function (req, res) {
-  User.findOne({ email: req.body.email }, function (err, user) {
+router.post('/login', (req, res) => {
+  User.findOne({ email: req.body.email }, (err, user) => {
     if (err) return res.status(500).send('Error on the server.');
     if (!user) return res.status(404).send('No user found.');
     let passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
@@ -51,13 +51,13 @@ router.post('/login', function (req, res) {
 });
 
 //LOGOUT USER
-router.get('/logout', function (req, res) {
+router.get('/logout', (req, res) => {
   res.status(200).send({ auth: false, token: null });
 });
 
 //GET USER INFO
-router.get('/me', VerifyToken, function (req, res, next) {
-  User.findById(req.userId, { password: 0 }, function (err, user) {
+router.get('/me', VerifyToken, (req, res, next) => {
+  User.findById(req.userId, { password: 0 }, (err, user) => {
     if (err) return res.status(500).send("There was a problem finding the user.");
     if (!user) return res.status(404).send("No user found.");
 
@@ -66,7 +66,7 @@ router.get('/me', VerifyToken, function (req, res, next) {
 });
 
 //UPDATE USER
-router.post('/update', VerifyToken, function (req, res) {
+router.post('/update', VerifyToken, (req, res) => {
   User.findOneAndUpdate({ _id: req.userId }, {
     name: req.body.name || User.name,
     email: req.body.email || User.email,
@@ -76,7 +76,7 @@ router.post('/update', VerifyToken, function (req, res) {
     height: req.body.height || User.height,
     goal: req.body.goal || User.goal,
   },
-    function (err, user) {
+    (err, user) => {
       if (err) return res.status(500).send('Error on the server.');
       res.status(200).send(user);
     });

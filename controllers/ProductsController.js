@@ -13,7 +13,7 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 //CREATE PRODUCT
-router.post('/add', function (req, res) {
+router.post('/add', (req, res) => {
 
   Product.create({
     name: req.body.name,
@@ -24,14 +24,14 @@ router.post('/add', function (req, res) {
     image: req.body.image,
     description: req.body.description,
   },
-    function (err, product) {
+    (err, product) => {
       if (err) return res.status(500).send("There was a problem creating the product.")
       res.status(200).send(product);
     });
 });
 
 //UPDATE PRODUCT
-router.post('/update', function (req, res) {
+router.post('/update', (req, res) => {
 
   Product.findOneAndUpdate({
     _id: req.body.id,
@@ -44,7 +44,7 @@ router.post('/update', function (req, res) {
       image: req.body.image || Product.image,
       description: req.body.description || Product.description,
     },
-    function (err, product) {
+    (err, product) => {
       if (err) return res.status(500).send("There was a problem updating the product.")
       res.status(200).send(product);
     });
