@@ -5,8 +5,6 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const VerifyToken = require('../auth/VerifyToken');
 const User = require('../models/User');
-const Product = require('../models/Product');
-const Note = require('../models/Note');
 const config = require('../config');
 
 router.use(bodyParser.urlencoded({ extended: false }));
@@ -16,7 +14,7 @@ router.use(bodyParser.json());
 //REGISTER USER
 router.post('/register', (req, res) => {
   User.findOne({ email: req.body.email }, (err, user) => {
-    if (user) return res.status(500).send('User with this e-mail already registered');
+    if (user) return res.status(500).send({ error: 'User with this e-mail already registered'});
     const hashedPassword = bcrypt.hashSync(req.body.password, 8);
 
     User.create({
@@ -25,7 +23,7 @@ router.post('/register', (req, res) => {
       password: hashedPassword
     },
       (err, user) => {
-        if (err) return res.status(500).send("There was a problem registering the user.")
+        if (err) return res.status(500).send({ error: "There was a problem registering the user"})
         // create a token
         let token = jwt.sign({ id: user._id }, config.secret, {
           expiresIn: 86400 // expires in 24 hours
@@ -39,8 +37,8 @@ router.post('/register', (req, res) => {
 //LOGIN USER
 router.post('/login', (req, res) => {
   User.findOne({ email: req.body.email }, (err, user) => {
-    if (err) return res.status(500).send('Error on the server.');
-    if (!user) return res.status(404).send('No user found.');
+    if (err) return res.status(500).send({ error: 'Error on the server'});
+    if (!user) return res.status(404).send({ error: 'No user found'});
     let passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
     if (!passwordIsValid) return res.status(401).send({ auth: false, token: null });
     let token = jwt.sign({ id: user._id }, config.secret, {
@@ -58,8 +56,8 @@ router.get('/logout', (req, res) => {
 //GET USER INFO
 router.get('/me', VerifyToken, (req, res, next) => {
   User.findById(req.userId, { password: 0 }, (err, user) => {
-    if (err) return res.status(500).send("There was a problem finding the user.");
-    if (!user) return res.status(404).send("No user found.");
+    if (err) return res.status(500).send({ error: "There was a problem finding the user"});
+    if (!user) return res.status(404).send({ error: "No user found"});
 
     res.status(200).send(user);
   });
@@ -77,7 +75,7 @@ router.post('/update', VerifyToken, (req, res) => {
     goal: req.body.goal || User.goal,
   },
     (err, user) => {
-      if (err) return res.status(500).send('Error on the server.');
+      if (err) return res.status(500).send({ error: 'Error on the server'});
       res.status(200).send(user);
     });
 });

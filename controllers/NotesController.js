@@ -19,7 +19,7 @@ router.post('/add', VerifyToken, (req, res) => {
   let kcal, proteins, fats;
 
   Product.find({ _id: req.body.product }, (err, product) => {
-    if (err) return res.status(500).send(err);
+    if (err) return res.status(500).send({error: err});
     kcal = Math.round(product.kcal * ((+(req.body.mass)) / 100));
     proteins = Math.round(product.proteins * ((+(req.body.mass)) / 100));
     fats = Math.round(product.fats * ((+(req.body.mass)) / 100));
@@ -36,7 +36,7 @@ router.post('/add', VerifyToken, (req, res) => {
     date: new Date(req.body.date)
   },
     (err, note) => {
-      if (err) return res.status(500).send(err);
+      if (err) return res.status(500).send({error: err});
       res.status(200).send(note);
     });
 });
@@ -46,7 +46,7 @@ router.post('/update', VerifyToken, (req, res) => {
   let kcal, proteins, fats;
 
   Product.find({ _id: req.body.product }, (err, product) => {
-    if (err) return res.status(500).send(err);
+    if (err) return res.status(500).send({error: err});
     kcal = Math.round(product.kcal * ((+(req.body.mass)) / 100));
     proteins = Math.round(product.proteins * ((+(req.body.mass)) / 100));
     fats = Math.round(product.fats * ((+(req.body.mass)) / 100));
@@ -65,7 +65,7 @@ router.post('/update', VerifyToken, (req, res) => {
       eatType: req.body.eatType || Note.eatType
     },
     (err, note) => {
-      if (err) return res.status(500).send(err)
+      if (err) return res.status(500).send({error: err})
       res.status(200).send(note);
     });
 });
@@ -81,7 +81,7 @@ router.post('/get', VerifyToken, (req, res) => {
     date: { $gte: start, $lt: end }
   },
     (err, notes) => {
-      if (err) return res.status(500).send(err)
+      if (err) return res.status(500).send({error: err})
       res.status(200).send(notes);
     });
 });
@@ -94,7 +94,7 @@ router.delete('/delete', VerifyToken, (req, res) => {
     _id: req.body.id
   },
     (err, note) => {
-      if (err) return res.status(500).send(err)
+      if (err) return res.status(500).send({error: err})
       res.status(200).send(note);
     });
 });
@@ -111,7 +111,7 @@ router.delete('/deleteAll', VerifyToken, (req, res) => {
     date: { $gte: start, $lt: end },
   },
     (err, notes) => {
-      if (err) return res.status(500).send(err)
+      if (err) return res.status(500).send({error: err})
       res.status(200).send(notes);
     });
 });
