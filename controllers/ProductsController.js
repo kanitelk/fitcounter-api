@@ -27,7 +27,7 @@ router.post("/add", (req, res) => {
     (err, product) => {
       if (err)
         return res
-          .status(500)
+          .status(200)
           .send("There was a problem creating the product.");
       res.status(200).send(product);
     }
@@ -52,7 +52,7 @@ router.post("/update", (req, res) => {
     (err, product) => {
       if (err)
         return res
-          .status(500)
+          .status(200)
           .send("There was a problem updating the product.");
       res.status(200).send(product);
     }
@@ -64,7 +64,7 @@ router.get("/getAll", (req, res) => {
   Product.find({}, (err, products) => {
     if (err)
       return res
-        .status(500)
+        .status(200)
         .send({ error: "There was a problem getting the products" });
     res.status(200).send(products);
   });
@@ -77,7 +77,7 @@ router.get("/find", (req, res) => {
     (err, products) => {
       if (err)
         return res
-          .status(500)
+          .status(200)
           .send({ error: "There was a problem getting the products" });
       res.status(200).send(products);
     }

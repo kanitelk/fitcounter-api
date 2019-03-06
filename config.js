@@ -1,5 +1,5 @@
 module.exports = {
-  'db': 'mongodb://localhost:27017/testrest',
-  'port': process.env.PORT || 3001,
-  'secret': 'supersecret'
+  db: "mongodb+srv://test:test@cluster0-9bjfn.mongodb.net/fitcounter",
+  port: process.env.PORT || 3001,
+  secret: "supersecret"
 };
